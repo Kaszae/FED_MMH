@@ -1,0 +1,14 @@
+# Template for FED_YOUR_REPO/.gitignore
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Environment variables (passwords, API keys)
+.env
+backend/.env
+
+# Add build directories
+
+# Add dependency directories (e.g. node_modules/ for Node back-ends)
+node_modules
