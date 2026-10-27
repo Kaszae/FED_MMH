@@ -1,0 +1,128 @@
+[
+  {
+    "id": {
+      "type": "1",
+      "required": true
+    },
+    "title": {
+      "type": "Radweg Straße des 17. Juni",
+      "required": true
+    },
+    "description": {
+      "type": "Breiter Radweg quer durch den Tiergarten zwischen Brandenburger Tor und Ernst-Reuter-Platz, vorbei an der Siegessäule.",
+      "required": true
+    },
+    "latitude": {
+      "type": 52.5145,
+      "required": true
+    },
+    "longitude": {
+      "type": 13.3501,
+      "required": true
+    },
+    "street": {
+      "type": "Straße des 17. Juni"
+    },
+    "city": {
+      "type": "Berlin"
+    },
+    "zip": {
+      "type": "10557"
+    },
+    "pos_neg_impact": {
+      "type": "pos",
+      "required": true
+    },
+    "likes": {
+      "type": 0,
+      "required": true
+    },
+    "image": {
+      "type": "string"
+    }
+  },
+  {
+    "id": {
+      "type": "1",
+      "required": true
+    },
+    "title": {
+      "type": "Radweg Straße des 17. Juni",
+      "required": true
+    },
+    "description": {
+      "type": "Breiter Radweg quer durch den Tiergarten zwischen Brandenburger Tor und Ernst-Reuter-Platz, vorbei an der Siegessäule.",
+      "required": true
+    },
+    "latitude": {
+      "type": 52.5145,
+      "required": true
+    },
+    "longitude": {
+      "type": 13.3501,
+      "required": true
+    },
+    "street": {
+      "type": "Straße des 17. Juni"
+    },
+    "city": {
+      "type": "Berlin"
+    },
+    "zip": {
+      "type": "10557"
+    },
+    "pos_neg_impact": {
+      "type": "pos",
+      "required": true
+    },
+    "likes": {
+      "type": 0,
+      "required": true
+    },
+    "image": {
+      "type": "string"
+    }
+  },
+  {
+    "id": {
+      "type": "3",
+      "required": true
+    },
+    "title": {
+      "type": "Kreuzung Kottbusser Tor",
+      "required": true
+    },
+    "description": {
+      "type": "Unübersichtlicher Kreisverkehr mit starkem Auto- und Lieferverkehr, zugeparkten Radstreifen und vielen Abbiegekonflikten. Gilt als Unfallschwerpunkt für Radfahrende.",
+      "required": true
+    },
+    "latitude": {
+      "type": 52.4991,
+      "required": true
+    },
+    "longitude": {
+      "type": 13.4178,
+      "required": true
+    },
+    "street": {
+      "type": "Kottbusser Tor"
+    },
+    "city": {
+      "type": "Berlin"
+    },
+    "zip": {
+      "type": "10999"
+    },
+    "pos_neg_impact": {
+      "type": "neg",
+      "required": true
+    },
+    "likes": {
+      "type": 0,
+      "required": true
+    },
+    "image": {
+      "type": "string"
+    }
+  }
+]
