@@ -1,8 +1,9 @@
 import 'dotenv/config'
-import crypto from 'node:crypto'
+import crypto, {randomUUID} from 'node:crypto'
 import express, { Express, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { User } from './models/User.js'; // js statt ts ist für "type": module die übliche Schreibweise
+import { Location } from './models/Locations';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -38,4 +39,25 @@ app.post('/api/login', async (req: Request, res: Response) => {
     );
 
     res.json({ token });
+})
+
+app.post('/api/locations', async (req: Request, res: Response) => {
+    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body;
+
+    try {
+        const location = new Location(
+            title,
+            description,
+            latitude,
+            longitude,
+            street,
+            city,
+            zip,
+            pos_neg_impact,
+            likes,
+            image
+
+
+    )
+    }
 })
