@@ -7,22 +7,21 @@
     "longitude": 13.3501,
     "street": "Straße des 17. Juni",
     "city": "Berlin",
-    "zip": "10557",
+    "zip": 10557,
     "pos_neg_impact": "positive",
     "likes": 0
   },
   {
     "id": 2,
-    "title": "Radweg Straße des 17. Juni",
-    "description": "Breiter Radweg quer durch den Tiergarten zwischen Brandenburger Tor und Ernst-Reuter-Platz, vorbei an der Siegessäule.",
-    "latitude": 52.5145,
-    "longitude": 13.3501,
-    "street": "Straße des 17. Juni",
+    "title": "Fahrradstraße Wallstraße",
+    "description": "Fahrradstraße entlang Wallstraße und Märkischem Ufer: Radfahrende haben Vorrang, Autos dürfen nur als Anlieger und mit angepasstem Tempo fahren. Ruhige Verbindung durch Mitte nahe dem Märkischen Museum.",
+    "latitude": 52.5117,
+    "longitude": 13.4083,
+    "street": "Wallstraße",
     "city": "Berlin",
-    "zip": "10557",
+    "zip": 10179,
     "pos_neg_impact": "positive",
-    "likes": 0,
-    "image": "string"
+    "likes": 0
   },
   {
     "id": 3,
@@ -32,7 +31,7 @@
     "longitude": 13.4178,
     "street": "Kottbusser Tor",
     "city": "Berlin",
-    "zip": "10999",
+    "zip": 10999,
     "pos_neg_impact": "negative",
     "likes": 0
   }

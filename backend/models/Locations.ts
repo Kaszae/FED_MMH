@@ -8,7 +8,7 @@ const locationSchema = new Schema({
     longitude: { type: Number, required: true, min: 13.0, max: 13.8 },
     street: { type: String },
     city: { type: String },
-    zip: { type: String },
+    zip: { type: Number },
     pos_neg_impact: { type: String, required: true, enum: ['positive', 'negative'] },
     likes: { type: Number, required: true, default: 0 },
     image: { type: String }

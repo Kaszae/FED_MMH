@@ -77,13 +77,15 @@ app.post('/api/login', async (req: Request, res: Response) => {
         return res.status(401).json({ message: 'Ungültige Zugangsdaten' });
     }
 
+    const role = user.role
+
     const token = jwt.sign(
-        { id: user._id, role: user.role },
+        { id: user._id, role: role },
         jwtSecret,
         { expiresIn: '1h' }
     );
 
-    res.json({ token });
+    res.json({ token, username, role });
 });
 
 app.use('/api/locations', authenticate) // Alle mit diesen Pfad verwenden authenticate
