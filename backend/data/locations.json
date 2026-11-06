@@ -1,6 +1,6 @@
 [
   {
-    "id": "1",
+    "id": 1,
     "title": "Radweg Straße des 17. Juni",
     "description": "Breiter Radweg quer durch den Tiergarten zwischen Brandenburger Tor und Ernst-Reuter-Platz, vorbei an der Siegessäule.",
     "latitude": 52.5145,
@@ -8,11 +8,11 @@
     "street": "Straße des 17. Juni",
     "city": "Berlin",
     "zip": "10557",
-    "pos_neg_impact": "pos",
+    "pos_neg_impact": "positive",
     "likes": 0
   },
   {
-    "id": "2",
+    "id": 2,
     "title": "Radweg Straße des 17. Juni",
     "description": "Breiter Radweg quer durch den Tiergarten zwischen Brandenburger Tor und Ernst-Reuter-Platz, vorbei an der Siegessäule.",
     "latitude": 52.5145,
@@ -20,12 +20,12 @@
     "street": "Straße des 17. Juni",
     "city": "Berlin",
     "zip": "10557",
-    "pos_neg_impact": "pos",
+    "pos_neg_impact": "positive",
     "likes": 0,
     "image": "string"
   },
   {
-    "id": "3",
+    "id": 3,
     "title": "Kreuzung Kottbusser Tor",
     "description": "Unübersichtlicher Kreisverkehr mit starkem Auto- und Lieferverkehr, zugeparkten Radstreifen und vielen Abbiegekonflikten. Gilt als Unfallschwerpunkt für Radfahrende.",
     "latitude": 52.4991,
@@ -33,7 +33,7 @@
     "street": "Kottbusser Tor",
     "city": "Berlin",
     "zip": "10999",
-    "pos_neg_impact": "neg",
+    "pos_neg_impact": "negative",
     "likes": 0
   }
 ]

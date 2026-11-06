@@ -18,6 +18,28 @@ const port: number = Number(process.env.PORT) || 3000;
 const jwtSecret: string =
     process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
 
+function authenticate(req: Request, res: Response, next: NextFunction) {
+    const header = req.headers.authorization;
+    if (!header || !header.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Kein Token angegeben' });
+    }
+
+    const token = header.slice(7); // "Bearer " ist 7 Zeichen lang
+    try {
+        const payload = jwt.verify(token, jwtSecret) as JwtPayload;
+        res.locals.user = { id: payload.id, role: payload.role };
+        next();
+    } catch {
+        return res.status(401).json({ message: 'Token ungültig oder abgelaufen' });
+    }
+}
+
+function requireAdmin(_req: Request, res: Response, next: NextFunction) {
+    if (res.locals.user?.role !== 'admin') {
+        return res.status(403).json({ message: 'Nur für Admins erlaubt' });
+    }
+    next();
+}
 
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`)
@@ -77,25 +99,20 @@ app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => 
     }
 })
 
-function authenticate(req: Request, res: Response, next: NextFunction) {
-    const header = req.headers.authorization;
-    if (!header || !header.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Kein Token angegeben' });
-    }
+app.get('/api/locations', async (req: Request, res: Response) => {
+    const locations = await Location.find();
+    return res.status(200).json(locations);
+})
 
-    const token = header.slice(7); // "Bearer " ist 7 Zeichen lang
-    try {
-        const payload = jwt.verify(token, jwtSecret) as JwtPayload;
-        res.locals.user = { id: payload.id, role: payload.role };
-        next();
-    } catch {
-        return res.status(401).json({ message: 'Token ungültig oder abgelaufen' });
-    }
-}
+app.get('/api/locations/:id', async (req: Request, res:Response) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id))
+        return res.status(404).json({ message: 'Ungültige ID' });
 
-function requireAdmin(req: Request, res: Response, next: NextFunction) {
-    if (res.locals.user?.role !== 'admin') {
-        return res.status(403).json({ message: 'Nur für Admins erlaubt' });
-    }
-    next();
-}
+
+    const location = await Location.findOne({ id })
+    if (location == null)
+        return res.status(404).json({ message: 'Standort nicht gefunden'})
+
+    return res.status(200).json(location);
+})
