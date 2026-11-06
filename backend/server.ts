@@ -2,14 +2,16 @@ import 'dotenv/config'
 import express, {Express, NextFunction, Request, Response} from 'express';
 import crypto from 'node:crypto'
 import mongoose from 'mongoose';
-import { User } from './models/User.js'; // js statt ts ist für "type": module die übliche Schreibweise
+import { Users } from './models/Users.js'; // js statt ts ist für "type": module die übliche Schreibweise
 import { Location } from './models/Locations';
 import bcrypt from 'bcrypt';
 import jwt, {JwtPayload} from 'jsonwebtoken';
+import {readFile} from "node:fs/promises";
 
 const mongooseUri = process.env.MONGODB_URI;
 if (!mongooseUri) throw new Error('MongoDB_URI fehlt in der .env');
 await mongoose.connect(mongooseUri);
+await seedDatabase()
 
 const app: Express = express();
 app.use(express.json()) // Zum Einlesen von req.body
@@ -17,6 +19,27 @@ const port: number = Number(process.env.PORT) || 3000;
 
 const jwtSecret: string =
     process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
+
+async function seedDatabase() {
+    if (await Location.countDocuments() === 0) {
+        const text = await readFile(new URL('./data/locations.json', import.meta.url), 'utf-8');
+        const locations = JSON.parse(text);
+        await Location.insertMany(locations);
+        console.log(`${locations.length} Locations eingefügt`);
+    }
+
+    if (await Users.countDocuments() === 0) {
+        const text = await readFile(new URL( './data/users.json', import.meta.url), 'utf-8');
+        const users = JSON.parse(text);
+
+        for (const user of users) {
+            user.password = await bcrypt.hash(user.password, 10);
+        }
+
+        await Users.insertMany(users);
+        console.log(`${users.length} Users eingefügt`)
+    }
+}
 
 function authenticate(req: Request, res: Response, next: NextFunction) {
     const header = req.headers.authorization;
@@ -48,7 +71,7 @@ app.listen(port, () => {
 app.post('/api/login', async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await Users.findOne({ username });
     if (!user || !(await bcrypt.compare(password, user.password))) {
         // bcrypt vergleicht Passwörter als Hash gegen Brute-Force Attacks
         return res.status(401).json({ message: 'Ungültige Zugangsdaten' });
@@ -162,5 +185,5 @@ app.delete('/api/locations/:id', requireAdmin, async (req: Request, res: Respons
     if (deleted == null)
         return res.status(404).json({ message: 'Standort nicht gefunden' });
 
-    return res.status(204).end();
+    return res.status(204).end(); // end() beendet das ganze ohne Body zurückzuschicken
 });

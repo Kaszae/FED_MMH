@@ -7,4 +7,4 @@ const userSchema = new Schema({
     firstname: { type: String, required: true}
 });
 
-export const User = model('User', userSchema);
+export const Users = model('Users', userSchema);
