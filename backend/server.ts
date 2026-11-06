@@ -43,7 +43,7 @@ function requireAdmin(_req: Request, res: Response, next: NextFunction) {
 
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`)
-})
+});
 
 app.post('/api/login', async (req: Request, res: Response) => {
     const { username, password } = req.body;
@@ -61,7 +61,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
     );
 
     res.json({ token });
-})
+});
 
 app.use('/api/locations', authenticate) // Alle mit diesen Pfad verwenden authenticate
 
@@ -97,12 +97,12 @@ app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => 
 
         return res.status(500).json({message: 'Serverfehler'});
     }
-})
+});
 
-app.get('/api/locations', async (req: Request, res: Response) => {
+app.get('/api/locations', async (_req: Request, res: Response) => {
     const locations = await Location.find();
     return res.status(200).json(locations);
-})
+});
 
 app.get('/api/locations/:id', async (req: Request, res:Response) => {
     const id = Number(req.params.id);
@@ -115,4 +115,52 @@ app.get('/api/locations/:id', async (req: Request, res:Response) => {
         return res.status(404).json({ message: 'Standort nicht gefunden'})
 
     return res.status(200).json(location);
-})
+});
+
+app.put('/api/locations/:id', requireAdmin, async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id))
+        return res.status(404).json({ message: 'Ungültige ID' });
+
+    const location = await Location.findOne({ id });
+    if (location == null)
+        return res.status(404).json({ message: 'Standort nicht gefunden'});
+
+    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body;
+
+    try {
+        location.overwrite({
+            id,
+            title,
+            description,
+            latitude,
+            longitude,
+            street,
+            city,
+            zip,
+            pos_neg_impact,
+            likes,
+            image
+        });
+
+        await location.save();
+        return res.status(200).json(location);
+    } catch (error) {
+        if (error instanceof mongoose.Error.ValidationError)
+            return res.status(400).json({ message: 'Ungültige Daten'});
+
+        return res.status(500).json({ message: 'Serverfehler' });
+    }
+});
+
+app.delete('/api/locations/:id', requireAdmin, async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id))
+        return res.status(404).json({ message: 'Ungültige ID' });
+
+    const deleted = await Location.findOneAndDelete({ id });
+    if (deleted == null)
+        return res.status(404).json({ message: 'Standort nicht gefunden' });
+
+    return res.status(204).end();
+});
