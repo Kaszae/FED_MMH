@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import express, {Express, NextFunction, Request, Response} from 'express';
-import cors from "cors";
+import cors from 'cors';
 import crypto from 'node:crypto'
 import mongoose from 'mongoose';
 import { Users } from './models/Users.js'; // js statt ts ist für "type": module die übliche Schreibweise
@@ -84,7 +84,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
     const role = user.role
 
     const token = jwt.sign(
-        { id: user._id, role: role },
+        { id: user._id, role: role, firstname: user.firstname, },
         jwtSecret,
         { expiresIn: '1h' }
     );
@@ -92,7 +92,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
     res.json({ token, username, role });
 });
 
-app.use('/api/locations', authenticate) // Alle mit diesen Pfad verwenden authenticate
+app.use('/api/locations', authenticate) // Alle mit dessen Pfad verwenden authenticate
 
 app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => {
     const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body;
