@@ -1,4 +1,3 @@
-// Feldnamen exakt wie im Backend (backend/models/Locations.ts)
 export type PosNegImpact = 'positive' | 'negative';
 
 export interface Location {
@@ -17,7 +16,7 @@ export interface Location {
 
 export type Role = 'admin' | 'non-admin';
 
-// Antwort von POST /api/login (backend/server.ts)
+// Response of POST /api/login (backend/server.ts)
 export interface LoginResponse {
   token: string;
   username: string;

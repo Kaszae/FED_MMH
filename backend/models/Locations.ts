@@ -13,5 +13,5 @@ const locationSchema = new Schema({
     likes: { type: Number, required: true, default: 0 },
     image: { type: String }
 });
-// TODO Validierung für das Bild ergänzen
+// TODO: add validation for the image
 export const Location = model('Location', locationSchema);

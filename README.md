@@ -164,4 +164,8 @@ curl -X DELETE http://localhost:3000/api/locations/4 \
 
 `204 No Content` → deleted, no response body.
 
+# Credits
+
+The visual design of the front-end (colors, cards, buttons, decorative blobs and waves) is based on the "Organic / Biophilic" UI style guide: https://www.uistyleguide.com/style/organic-biophilic
+
 **NOTE**: This README.md was written with the help of an AI. 

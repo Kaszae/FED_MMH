@@ -3,7 +3,7 @@ import express, {Express, NextFunction, Request, Response} from 'express';
 import cors from 'cors';
 import crypto from 'node:crypto'
 import mongoose from 'mongoose';
-import { Users } from './models/Users.js'; // js statt ts ist für "type": module die übliche Schreibweise
+import { Users } from './models/Users.js'; // .js instead of .ts is the usual spelling for imports with "type": "module"
 import { Location } from './models/Locations';
 import bcrypt from 'bcrypt';
 import jwt, {JwtPayload} from 'jsonwebtoken';
@@ -18,7 +18,7 @@ const app: Express = express();
 app.use(cors({
     origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
 }))
-app.use(express.json()) // Zum Einlesen von req.body
+app.use(express.json()) // Parses the JSON body into req.body
 const port: number = Number(process.env.PORT) || 3000;
 
 const jwtSecret: string =
@@ -51,7 +51,7 @@ function authenticate(req: Request, res: Response, next: NextFunction) {
         return res.status(401).json({ message: 'Kein Token angegeben' });
     }
 
-    const token = header.slice(7); // "Bearer " ist 7 Zeichen lang
+    const token = header.slice(7); // "Bearer " is 7 characters long
     try {
         const payload = jwt.verify(token, jwtSecret) as JwtPayload;
         res.locals.user = { id: payload.id, role: payload.role };
@@ -77,7 +77,7 @@ app.post('/api/login', async (req: Request, res: Response) => {
 
     const user = await Users.findOne({ username });
     if (!user || !(await bcrypt.compare(password, user.password))) {
-        // bcrypt vergleicht Passwörter als Hash gegen Brute-Force Attacks
+        // bcrypt compares the password with the stored hash; hashing protects against brute-force attacks
         return res.status(401).json({ message: 'Ungültige Zugangsdaten' });
     }
 
@@ -92,12 +92,12 @@ app.post('/api/login', async (req: Request, res: Response) => {
     res.json({ token, username, role });
 });
 
-app.use('/api/locations', authenticate) // Alle mit dessen Pfad verwenden authenticate
+app.use('/api/locations', authenticate) // Every route under this path uses authenticate
 
 app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => {
     const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body;
 
-    const last = await Location.findOne().sort(({ id: -1})); // -1 für absteigende Sortierung
+    const last = await Location.findOne().sort(({ id: -1})); // -1 sorts in descending order
     let id = 1;
     if (last != null) id = last.id + 1;
 
@@ -191,5 +191,5 @@ app.delete('/api/locations/:id', requireAdmin, async (req: Request, res: Respons
     if (deleted == null)
         return res.status(404).json({ message: 'Standort nicht gefunden' });
 
-    return res.status(204).end(); // end() beendet das ganze ohne Body zurückzuschicken
+    return res.status(204).end(); // end() finishes the response without sending a body
 });

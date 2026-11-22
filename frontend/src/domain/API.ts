@@ -1,6 +1,5 @@
 import type { Location, LoginResponse } from './types';
 
-// Base-URL aus frontend/.env, z. B. http://localhost:3000
 const API_URL = import.meta.env.VITE_API_URL;
 
 export async function login(username: string, password: string): Promise<LoginResponse> {
