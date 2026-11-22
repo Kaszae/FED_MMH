@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import express, {Express, NextFunction, Request, Response} from 'express';
+import cors from "cors";
 import crypto from 'node:crypto'
 import mongoose from 'mongoose';
 import { Users } from './models/Users.js'; // js statt ts ist für "type": module die übliche Schreibweise
@@ -14,6 +15,9 @@ await mongoose.connect(mongooseUri);
 await seedDatabase()
 
 const app: Express = express();
+app.use(cors({
+    origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
+}))
 app.use(express.json()) // Zum Einlesen von req.body
 const port: number = Number(process.env.PORT) || 3000;
 
