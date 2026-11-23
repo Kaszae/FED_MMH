@@ -1,7 +1,6 @@
 import 'dotenv/config'
 import express, {Express, NextFunction, Request, Response} from 'express';
 import cors from 'cors';
-import crypto from 'node:crypto'
 import mongoose from 'mongoose';
 import { Users } from './models/Users.js'; // .js instead of .ts is the usual spelling for imports with "type": "module"
 import { Location } from './models/Locations';
@@ -21,8 +20,9 @@ app.use(cors({
 app.use(express.json()) // Parses the JSON body into req.body
 const port: number = Number(process.env.PORT) || 3000;
 
-const jwtSecret: string =
-    process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
+// ?? '' keeps the type string, so TypeScript also accepts jwtSecret inside authenticate()
+const jwtSecret: string = process.env.JWT_SECRET ?? '';
+if (!jwtSecret) throw new Error('JWT_SECRET fehlt in der .env');
 
 async function seedDatabase() {
     if (await Location.countDocuments() === 0) {
@@ -73,7 +73,11 @@ app.listen(port, () => {
 });
 
 app.post('/api/login', async (req: Request, res: Response) => {
-    const { username, password } = req.body;
+    // Express 5 leaves req.body undefined when the request has no JSON body
+    const { username, password } = req.body ?? {};
+    if (typeof username !== 'string' || typeof password !== 'string') {
+        return res.status(401).json({ message: 'Ungültige Zugangsdaten' });
+    }
 
     const user = await Users.findOne({ username });
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -95,12 +99,11 @@ app.post('/api/login', async (req: Request, res: Response) => {
 app.use('/api/locations', authenticate) // Every route under this path uses authenticate
 
 app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => {
-    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body;
+    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body ?? {};
 
     const last = await Location.findOne().sort(({ id: -1})); // -1 sorts in descending order
     let id = 1;
     if (last != null) id = last.id + 1;
-
 
     try {
         const location = new Location({
@@ -155,7 +158,7 @@ app.put('/api/locations/:id', requireAdmin, async (req: Request, res: Response) 
     if (location == null)
         return res.status(404).json({ message: 'Standort nicht gefunden'});
 
-    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body;
+    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body ?? {};
 
     try {
         location.overwrite({
