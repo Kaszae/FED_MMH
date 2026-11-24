@@ -1,4 +1,4 @@
-export function Header() {
+export default function Header() {
   return (
     <header data-testid="app-header" className="bg-leaf-ink shadow">
       <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3">

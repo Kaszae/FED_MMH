@@ -10,7 +10,7 @@ export async function login(username: string, password: string): Promise<LoginRe
   });
 
   if (!response.ok) {
-    throw new Error(`Login fehlgeschlagen (Status ${response.status})`);
+    throw new Error(`Login failed (status ${response.status})`);
   }
 
   return (await response.json()) as LoginResponse;
@@ -22,7 +22,7 @@ export async function getLocations(token: string): Promise<Location[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Locations konnten nicht geladen werden (Status ${response.status})`);
+    throw new Error(`Could not load locations (status ${response.status})`);
   }
 
   return (await response.json()) as Location[];
