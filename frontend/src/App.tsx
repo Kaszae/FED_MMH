@@ -6,12 +6,15 @@ import LoginPage from './pages/LoginPage';
 import { useState } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import type { LoginResponse } from './domain/types';
+import { decodeToken } from './domain/token';
 import LocationsPage from './pages/LocationsPage.tsx';
 
 function App() {
     // null = not logged in; holds token, username and role after a successful login
     const [auth, setAuth] = useState<LoginResponse | null>(null);
     const navigate = useNavigate();
+    // Derived from the token on every render, so no extra state is needed
+    const firstname = auth ? decodeToken(auth.token).firstname : undefined;
 
     async function handleLogin(username: string, password: string) {
         try {
@@ -24,14 +27,13 @@ function App() {
     }
 
     function handleLogout() {
-        // The token lives only in this state, so clearing it removes it completely
         setAuth(null);
         navigate('/', { replace: true });
     }
 
     return (
         <div className="flex min-h-screen flex-col">
-            <Header />
+            <Header firstname={firstname} />
             {/* The nav bar exists only after login */}
             {auth && <NavBar role={auth.role} onLogout={handleLogout} />}
             <main className="relative mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8">

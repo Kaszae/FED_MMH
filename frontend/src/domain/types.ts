@@ -16,9 +16,14 @@ export interface Location {
 
 export type Role = 'admin' | 'non-admin';
 
-// Response of POST /api/login (backend/server.ts)
 export interface LoginResponse {
     token: string;
     username: string;
     role: Role;
+}
+
+export interface TokenPayload {
+    id: string;
+    role: Role;
+    firstname: string;
 }
