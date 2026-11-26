@@ -1,23 +1,39 @@
 import Footer from './components/Footer';
 import Header from './components/Header';
+import NavBar from './components/NavBar';
 import { login } from './domain/API';
 import LoginPage from './pages/LoginPage';
-import { Navigate, Route, Routes } from 'react-router';
+import { useState } from 'react';
+import { Navigate, Route, Routes, useNavigate } from 'react-router';
+import type { LoginResponse } from './domain/types';
 import LocationsPage from './pages/LocationsPage.tsx';
 
 function App() {
+    // null = not logged in; holds token, username and role after a successful login
+    const [auth, setAuth] = useState<LoginResponse | null>(null);
+    const navigate = useNavigate();
+
     async function handleLogin(username: string, password: string) {
         try {
             const result = await login(username, password);
-            console.log('Login successful:', result.username, result.role);
+            setAuth(result);
+            navigate('/locations', { replace: true });
         } catch (error) {
             console.error(error);
         }
     }
 
+    function handleLogout() {
+        // The token lives only in this state, so clearing it removes it completely
+        setAuth(null);
+        navigate('/', { replace: true });
+    }
+
     return (
         <div className="flex min-h-screen flex-col">
             <Header />
+            {/* The nav bar exists only after login */}
+            {auth && <NavBar role={auth.role} onLogout={handleLogout} />}
             <main className="relative mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8">
                 {/* Decorative blobs only on wide screens, in the empty margin next to the box */}
                 <div
@@ -29,8 +45,20 @@ function App() {
                     aria-hidden="true"
                 />
                 <Routes>
-                    <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
-                    <Route path="/locations" element={<LocationsPage />} />
+                    <Route
+                        path="/"
+                        element={
+                            // 'Replace' replaces the old URI
+                            auth ? <Navigate to="/locations" replace /> : <LoginPage onLogin={handleLogin} />
+                        }
+                    />
+                    <Route
+                        path="/locations"
+                        element={
+                            // Protected route: without a login, back to the start page
+                            auth ? <LocationsPage /> : <Navigate to="/" replace />
+                        }
+                    />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </main>

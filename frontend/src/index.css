@@ -94,6 +94,16 @@
         color: #ffffff;
     }
 
+    /* Disabled buttons, e.g. "Add Location" until the feature exists */
+    .button:disabled {
+        border-color: var(--color-forest);
+        background: var(--color-forest);
+        color: #ffffff;
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
     .button:focus-visible {
         outline: 3px solid var(--color-leaf-ink);
         outline-offset: 3px;
