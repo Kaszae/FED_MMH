@@ -1,23 +1,25 @@
-import 'dotenv/config'
-import express, {Express, NextFunction, Request, Response} from 'express';
+import 'dotenv/config';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { Users } from './models/Users.js'; // .js instead of .ts is the usual spelling for imports with "type": "module"
 import { Location } from './models/Locations';
 import bcrypt from 'bcrypt';
-import jwt, {JwtPayload} from 'jsonwebtoken';
-import {readFile} from "node:fs/promises";
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { readFile } from 'node:fs/promises';
 
 const mongooseUri = process.env.MONGODB_URI;
 if (!mongooseUri) throw new Error('MongoDB_URI fehlt in der .env');
 await mongoose.connect(mongooseUri);
-await seedDatabase()
+await seedDatabase();
 
 const app: Express = express();
-app.use(cors({
-    origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
-}))
-app.use(express.json()) // Parses the JSON body into req.body
+app.use(
+    cors({
+        origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
+    }),
+);
+app.use(express.json()); // Parses the JSON body into req.body
 const port: number = Number(process.env.PORT) || 3000;
 
 // ?? '' keeps the type string, so TypeScript also accepts jwtSecret inside authenticate()
@@ -25,15 +27,15 @@ const jwtSecret: string = process.env.JWT_SECRET ?? '';
 if (!jwtSecret) throw new Error('JWT_SECRET fehlt in der .env');
 
 async function seedDatabase() {
-    if (await Location.countDocuments() === 0) {
+    if ((await Location.countDocuments()) === 0) {
         const text = await readFile(new URL('./data/locations.json', import.meta.url), 'utf-8');
         const locations = JSON.parse(text);
         await Location.insertMany(locations);
         console.log(`${locations.length} Locations eingefügt`);
     }
 
-    if (await Users.countDocuments() === 0) {
-        const text = await readFile(new URL( './data/users.json', import.meta.url), 'utf-8');
+    if ((await Users.countDocuments()) === 0) {
+        const text = await readFile(new URL('./data/users.json', import.meta.url), 'utf-8');
         const users = JSON.parse(text);
 
         for (const user of users) {
@@ -41,7 +43,7 @@ async function seedDatabase() {
         }
 
         await Users.insertMany(users);
-        console.log(`${users.length} Users eingefügt`)
+        console.log(`${users.length} Users eingefügt`);
     }
 }
 
@@ -69,7 +71,7 @@ function requireAdmin(_req: Request, res: Response, next: NextFunction) {
 }
 
 app.listen(port, () => {
-    console.log(`Server läuft auf http://localhost:${port}`)
+    console.log(`Server läuft auf http://localhost:${port}`);
 });
 
 app.post('/api/login', async (req: Request, res: Response) => {
@@ -85,23 +87,32 @@ app.post('/api/login', async (req: Request, res: Response) => {
         return res.status(401).json({ message: 'Ungültige Zugangsdaten' });
     }
 
-    const role = user.role
+    const role = user.role;
 
-    const token = jwt.sign(
-        { id: user._id, role: role, firstname: user.firstname, },
-        jwtSecret,
-        { expiresIn: '1h' }
-    );
+    const token = jwt.sign({ id: user._id, role: role, firstname: user.firstname }, jwtSecret, {
+        expiresIn: '1h',
+    });
 
     res.json({ token, username, role });
 });
 
-app.use('/api/locations', authenticate) // Every route under this path uses authenticate
+app.use('/api/locations', authenticate); // Every route under this path uses authenticate
 
 app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => {
-    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body ?? {};
+    const {
+        title,
+        description,
+        latitude,
+        longitude,
+        street,
+        city,
+        zip,
+        pos_neg_impact,
+        likes,
+        image,
+    } = req.body ?? {};
 
-    const last = await Location.findOne().sort(({ id: -1})); // -1 sorts in descending order
+    const last = await Location.findOne().sort({ id: -1 }); // -1 sorts in descending order
     let id = 1;
     if (last != null) id = last.id + 1;
 
@@ -117,7 +128,7 @@ app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => 
             zip,
             pos_neg_impact,
             likes,
-            image
+            image,
         });
 
         await location.save();
@@ -125,9 +136,9 @@ app.post('/api/locations', requireAdmin, async (req: Request, res: Response) => 
         return res.status(201).location(`/api/locations/${location.id}`).json(location);
     } catch (error) {
         if (error instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({ message: 'Standort konnte nicht hochgeladen werden'});
+            return res.status(400).json({ message: 'Standort konnte nicht hochgeladen werden' });
 
-        return res.status(500).json({message: 'Serverfehler'});
+        return res.status(500).json({ message: 'Serverfehler' });
     }
 });
 
@@ -136,29 +147,35 @@ app.get('/api/locations', async (_req: Request, res: Response) => {
     return res.status(200).json(locations);
 });
 
-app.get('/api/locations/:id', async (req: Request, res:Response) => {
+app.get('/api/locations/:id', async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    if (Number.isNaN(id))
-        return res.status(404).json({ message: 'Ungültige ID' });
+    if (Number.isNaN(id)) return res.status(404).json({ message: 'Ungültige ID' });
 
-
-    const location = await Location.findOne({ id })
-    if (location == null)
-        return res.status(404).json({ message: 'Standort nicht gefunden'})
+    const location = await Location.findOne({ id });
+    if (location == null) return res.status(404).json({ message: 'Standort nicht gefunden' });
 
     return res.status(200).json(location);
 });
 
 app.put('/api/locations/:id', requireAdmin, async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    if (Number.isNaN(id))
-        return res.status(404).json({ message: 'Ungültige ID' });
+    if (Number.isNaN(id)) return res.status(404).json({ message: 'Ungültige ID' });
 
     const location = await Location.findOne({ id });
-    if (location == null)
-        return res.status(404).json({ message: 'Standort nicht gefunden'});
+    if (location == null) return res.status(404).json({ message: 'Standort nicht gefunden' });
 
-    const { title, description, latitude, longitude, street, city, zip, pos_neg_impact, likes, image } = req.body ?? {};
+    const {
+        title,
+        description,
+        latitude,
+        longitude,
+        street,
+        city,
+        zip,
+        pos_neg_impact,
+        likes,
+        image,
+    } = req.body ?? {};
 
     try {
         location.overwrite({
@@ -172,14 +189,14 @@ app.put('/api/locations/:id', requireAdmin, async (req: Request, res: Response) 
             zip,
             pos_neg_impact,
             likes,
-            image
+            image,
         });
 
         await location.save();
         return res.status(200).json(location);
     } catch (error) {
         if (error instanceof mongoose.Error.ValidationError)
-            return res.status(400).json({ message: 'Ungültige Daten'});
+            return res.status(400).json({ message: 'Ungültige Daten' });
 
         return res.status(500).json({ message: 'Serverfehler' });
     }
@@ -187,12 +204,10 @@ app.put('/api/locations/:id', requireAdmin, async (req: Request, res: Response) 
 
 app.delete('/api/locations/:id', requireAdmin, async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    if (Number.isNaN(id))
-        return res.status(404).json({ message: 'Ungültige ID' });
+    if (Number.isNaN(id)) return res.status(404).json({ message: 'Ungültige ID' });
 
     const deleted = await Location.findOneAndDelete({ id });
-    if (deleted == null)
-        return res.status(404).json({ message: 'Standort nicht gefunden' });
+    if (deleted == null) return res.status(404).json({ message: 'Standort nicht gefunden' });
 
     return res.status(204).end(); // end() finishes the response without sending a body
 });

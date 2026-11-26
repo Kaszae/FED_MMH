@@ -9,99 +9,99 @@
   e.g. --color-forest -> bg-forest, text-forest, border-forest.
 */
 @theme {
-  --color-forest: #228b22;
-  --color-bark: #8b4513;
-  --color-sky: #87ceeb;
-  --color-linen: #f5f5dc;
-  --color-olive: #6b8e23;
-  --color-goldenrod: #daa520; /* sunny accent fills and icons, never text */
-  --color-leaf-ink: #14532d;
-  --color-leaf-text: #166534;
+    --color-forest: #228b22;
+    --color-bark: #8b4513;
+    --color-sky: #87ceeb;
+    --color-linen: #f5f5dc;
+    --color-olive: #6b8e23;
+    --color-goldenrod: #daa520; /* sunny accent fills and icons, never text */
+    --color-leaf-ink: #14532d;
+    --color-leaf-text: #166534;
 
-  --font-serif: Georgia, 'Times New Roman', serif;
+    --font-serif: Georgia, 'Times New Roman', serif;
 }
 
 /* Base styles for HTML elements */
 @layer base {
-  body {
-    background: var(--color-linen);
-    color: var(--color-leaf-text);
-    font-family: system-ui, sans-serif;
-  }
+    body {
+        background: var(--color-linen);
+        color: var(--color-leaf-text);
+        font-family: system-ui, sans-serif;
+    }
 
-  h1,
-  h2,
-  h3 {
-    color: var(--color-leaf-ink);
-    font-family: var(--font-serif);
-    font-weight: 400;
-    line-height: 1.15;
-  }
+    h1,
+    h2,
+    h3 {
+        color: var(--color-leaf-ink);
+        font-family: var(--font-serif);
+        font-weight: 400;
+        line-height: 1.15;
+    }
 }
 
 /* Reusable building blocks, used in TSX as className="card" or "button" */
 @layer components {
-  .card {
-    padding: 2rem;
-    border-radius: 40px;
-    background: rgba(34, 139, 34, 0.1);
-  }
-
-  .card--earth {
-    background: rgba(139, 69, 19, 0.1);
-  }
-
-  /* Uneven radii read as a pebble or leaf. Decorative blobs sit in empty margins or frame an
-     image, never behind translucent cards or text */
-  .blob {
-    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
-    background: linear-gradient(135deg, var(--color-olive), var(--color-forest));
-  }
-
-  /* Flowing SVG wave between sections instead of a straight edge */
-  .wave {
-    height: 4rem;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0 40C240 0 480 80 720 40S1200 0 1440 40V80H0Z' fill='%23228B22' fill-opacity='0.12'/%3E%3C/svg%3E")
-      center / 100% 100% no-repeat;
-  }
-
-  /* White on --forest passes only as large text (19px bold); smaller buttons use --leaf-text */
-  .button {
-    padding: 1rem 2rem;
-    border: 2px solid var(--color-forest);
-    border-radius: 9999px;
-    background: var(--color-forest);
-    color: #ffffff;
-    font-size: 1.1875rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 10px 30px rgba(34, 139, 34, 0.3);
-    transition:
-      background-color 150ms ease,
-      color 150ms ease;
-  }
-
-  .button--outline {
-    border-color: var(--color-leaf-text);
-    background: transparent;
-    color: var(--color-leaf-text);
-    box-shadow: none;
-  }
-
-  .button:hover,
-  .button--outline:hover {
-    background: var(--color-leaf-text);
-    color: #ffffff;
-  }
-
-  .button:focus-visible {
-    outline: 3px solid var(--color-leaf-ink);
-    outline-offset: 3px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .button {
-      transition: none;
+    .card {
+        padding: 2rem;
+        border-radius: 40px;
+        background: rgba(34, 139, 34, 0.1);
     }
-  }
+
+    .card--earth {
+        background: rgba(139, 69, 19, 0.1);
+    }
+
+    /* Uneven radii read as a pebble or leaf. Decorative blobs sit in empty margins or frame an
+     image, never behind translucent cards or text */
+    .blob {
+        border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+        background: linear-gradient(135deg, var(--color-olive), var(--color-forest));
+    }
+
+    /* Flowing SVG wave between sections instead of a straight edge */
+    .wave {
+        height: 4rem;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0 40C240 0 480 80 720 40S1200 0 1440 40V80H0Z' fill='%23228B22' fill-opacity='0.12'/%3E%3C/svg%3E")
+            center / 100% 100% no-repeat;
+    }
+
+    /* White on --forest passes only as large text (19px bold); smaller buttons use --leaf-text */
+    .button {
+        padding: 1rem 2rem;
+        border: 2px solid var(--color-forest);
+        border-radius: 9999px;
+        background: var(--color-forest);
+        color: #ffffff;
+        font-size: 1.1875rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(34, 139, 34, 0.3);
+        transition:
+            background-color 150ms ease,
+            color 150ms ease;
+    }
+
+    .button--outline {
+        border-color: var(--color-leaf-text);
+        background: transparent;
+        color: var(--color-leaf-text);
+        box-shadow: none;
+    }
+
+    .button:hover,
+    .button--outline:hover {
+        background: var(--color-leaf-text);
+        color: #ffffff;
+    }
+
+    .button:focus-visible {
+        outline: 3px solid var(--color-leaf-ink);
+        outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .button {
+            transition: none;
+        }
+    }
 }
